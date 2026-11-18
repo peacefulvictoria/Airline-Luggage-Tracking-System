@@ -1,0 +1,81 @@
+{% extends "base.html" %} {% block title %}Register Passenger - SkyTrack Air{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <h3>Step 1: Register Airline Passenger</h3>
+  </div>
+  <form method="POST" action="{{ url_for('register_passenger') }}">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="full_name">Passenger Full Name</label>
+        <input
+          type="text"
+          id="full_name"
+          name="full_name"
+          class="form-control"
+          placeholder="e.g., Solomon Victoria Awazi"
+          required />
+      </div>
+      <div class="form-group">
+        <label for="phone_number">Phone Number</label>
+        <input
+          type="text"
+          id="phone_number"
+          name="phone_number"
+          class="form-control"
+          placeholder="e.g., +234803*****"
+          required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-control"
+          placeholder="e.g., awazivictoria@example.com"
+          required />
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">
+      Save Passenger &amp; Proceed to Luggage
+    </button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Recently Registered Passengers</h3>
+  </div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Full Name</th>
+          <th>Phone Number</th>
+          <th>Email</th>
+          <th>Quick Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in passengers %}
+        <tr>
+          <td>#{{ p.Passenger_ID }}</td>
+          <td><strong>{{ p.Full_Name }}</strong></td>
+          <td>{{ p.Phone_Number }}</td>
+          <td>{{ p.Email }}</td>
+          <td>
+            <a
+              href="{{ url_for('register_luggage', passenger_id=p.Passenger_ID) }}"
+              class="btn btn-sky btn-sm">
+              + Add Luggage
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

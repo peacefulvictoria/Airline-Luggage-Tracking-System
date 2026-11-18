@@ -1,0 +1,93 @@
+{% extends "base.html" %} {% block title %}Airline Staff Workspace - SkyTrack Air{%
+endblock %} {% block content %}
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">Registered Passengers</div>
+    <div class="kpi-value">{{ passenger_count }}</div>
+  </div>
+  <div class="kpi-card accent">
+    <div class="kpi-label">Active / In-Transit Bags</div>
+    <div class="kpi-value">{{ in_transit_count }}</div>
+  </div>
+  <div class="kpi-card success">
+    <div class="kpi-label">Delivered Bags</div>
+    <div class="kpi-value">{{ delivered_count }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Baggage Management &amp; QR Directory</h3>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
+      <a href="{{ url_for('register_passenger') }}" class="btn btn-outline btn-sm"
+        >+ New Passenger</a
+      >
+      <a href="{{ url_for('register_luggage') }}" class="btn btn-primary btn-sm"
+        >+ Register Luggage</a
+      >
+      <a href="{{ url_for('scan_qr') }}" class="btn btn-sky btn-sm">Scan QR Checkpoint</a>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <input
+      type="text"
+      class="form-control"
+      data-table-search="staffLuggageTable"
+      placeholder="Search by Tracking ID, Passenger Name, Destination, or Status..." />
+  </div>
+
+  <div class="table-responsive">
+    <table id="staffLuggageTable">
+      <thead>
+        <tr>
+          <th>Tracking ID</th>
+          <th>Passenger</th>
+          <th>Destination</th>
+          <th>Weight</th>
+          <th>Current Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bag in luggage_list %}
+        <tr>
+          <td><strong>{{ bag.Tracking_Code }}</strong></td>
+          <td>
+            {{ bag.Full_Name }}<br /><small style="color: #64748b"
+              >{{ bag.Phone_Number }}</small
+            >
+          </td>
+          <td>{{ bag.Destination }}</td>
+          <td>{{ bag.Weight }} kg</td>
+          <td>
+            <span
+              class="badge {% if bag.Status == 'Delivered' %}badge-delivered{% else %}badge-transit{% endif %}">
+              {{ bag.Status }}
+            </span>
+          </td>
+          <td style="display: flex; gap: 0.4rem; flex-wrap: wrap">
+            <a
+              href="{{ url_for('luggage_details', luggage_id=bag.Luggage_ID) }}"
+              class="btn btn-primary btn-sm"
+              >QR &amp; History</a
+            >
+            <a
+              href="{{ url_for('scan_qr', code=bag.Tracking_Code) }}"
+              class="btn btn-outline btn-sm"
+              >Update Status</a
+            >
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" style="text-align: center; color: #64748b">
+            No luggage items found. Click "+ Register Luggage" to begin.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Staff &amp; Admin Login - SkyTrack Air{% endblock %}
+
+{% block content %}
+<div style="max-width: 440px; margin: 2rem auto;">
+    <div class="card">
+        <div class="card-header">
+            <h3>Authorized Personnel Login</h3>
+        </div>
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;">Sign In to System</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %} {% block title %}Manage System Users - SkyTrack Air{% endblock
+%} {% block content %}
+<div class="card">
+  <div class="card-header">
+    <h3>Register New Airline Staff / Administrator</h3>
+  </div>
+  <form method="POST" action="{{ url_for('manage_users') }}">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          class="form-control"
+          placeholder="e.g., staff_los"
+          required />
+      </div>
+      <div class="form-group">
+        <label for="email">Official Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-control"
+          placeholder="e.g., staff.los@skytrackair.com"
+          required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password (min. 6 characters)</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-control"
+          required />
+      </div>
+      <div class="form-group">
+        <label for="role">System Role</label>
+        <select id="role" name="role" class="form-control" required>
+          <option value="Staff">Airline Staff</option>
+          <option value="Admin">System Administrator</option>
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Create User Account</button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Authorized System Users</h3>
+  </div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Created At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>#{{ u.User_ID }}</td>
+          <td><strong>{{ u.Username }}</strong></td>
+          <td>{{ u.Email }}</td>
+          <td>
+            <span
+              class="badge {% if u.Role == 'Admin' %}badge-warning{% else %}badge-transit{% endif %}">
+              {{ u.Role }}
+            </span>
+          </td>
+          <td>{{ u.Created_At }}</td>
+          <td>
+            {% if u.User_ID != session.get('user_id') %}
+            <form
+              method="POST"
+              action="{{ url_for('delete_user', user_id=u.User_ID) }}"
+              onsubmit="return confirm('Remove user {{ u.Username }}?');"
+              style="display: inline">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+            {% else %}
+            <span style="color: #64748b; font-size: 0.82rem">Active Session</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "base.html" %} {% block title %}Administrator Dashboard - SkyTrack Air{%
+endblock %} {% block content %}
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">Total Passengers</div>
+    <div class="kpi-value">{{ stats.total_passengers }}</div>
+  </div>
+  <div class="kpi-card accent">
+    <div class="kpi-label">Total Luggage Items</div>
+    <div class="kpi-value">{{ stats.total_luggage }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Registered Staff</div>
+    <div class="kpi-value">{{ stats.registered_staff }}</div>
+  </div>
+  <div class="kpi-card success">
+    <div class="kpi-label">Delivered Luggage</div>
+    <div class="kpi-value">{{ stats.delivered_luggage }}</div>
+  </div>
+  <div class="kpi-card warning">
+    <div class="kpi-label">Pending / In-Transit</div>
+    <div class="kpi-value">{{ stats.pending_luggage }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>All Luggage Records</h3>
+    <input
+      type="text"
+      class="form-control"
+      data-table-search="adminLuggageTable"
+      placeholder="Search by Tracking ID, Passenger, Destination..."
+      style="max-width: 320px" />
+  </div>
+  <div class="table-responsive">
+    <table id="adminLuggageTable">
+      <thead>
+        <tr>
+          <th>Tracking ID</th>
+          <th>Passenger</th>
+          <th>Destination</th>
+          <th>Weight</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in all_luggage %}
+        <tr>
+          <td><strong>{{ item.Tracking_Code }}</strong></td>
+          <td>
+            {{ item.Full_Name }}<br /><small style="color: #64748b"
+              >{{ item.Phone_Number }}</small
+            >
+          </td>
+          <td>{{ item.Destination }}</td>
+          <td>{{ item.Weight }} kg</td>
+          <td>
+            <span
+              class="badge {% if item.Status == 'Delivered' %}badge-delivered{% else %}badge-transit{% endif %}">
+              {{ item.Status }}
+            </span>
+          </td>
+          <td>
+            <a
+              href="{{ url_for('luggage_details', luggage_id=item.Luggage_ID) }}"
+              class="btn btn-outline btn-sm"
+              >View / QR</a
+            >
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" style="text-align: center; color: #64748b">
+            No luggage records registered yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Recent Checkpoint Tracking Activities</h3>
+  </div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Tracking ID</th>
+          <th>Passenger</th>
+          <th>Checkpoint Location</th>
+          <th>Status</th>
+          <th>Scan Time</th>
+          <th>Updated By</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in recent_tracking %}
+        <tr>
+          <td><strong>{{ log.Tracking_Code }}</strong></td>
+          <td>{{ log.Full_Name }}</td>
+          <td>{{ log.Location }}</td>
+          <td><span class="badge badge-transit">{{ log.Status }}</span></td>
+          <td>{{ log.Scan_Time }}</td>
+          <td>{{ log.Updated_By }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" style="text-align: center; color: #64748b">
+            No scan activity logged yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Registered Passengers</h3>
+    <input
+      type="text"
+      class="form-control"
+      data-table-search="adminPassengerTable"
+      placeholder="Search passengers..."
+      style="max-width: 280px" />
+  </div>
+  <div class="table-responsive">
+    <table id="adminPassengerTable">
+      <thead>
+        <tr>
+          <th>Passenger ID</th>
+          <th>Full Name</th>
+          <th>Phone Number</th>
+          <th>Email</th>
+          <th>Registered Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in passengers %}
+        <tr>
+          <td>#{{ p.Passenger_ID }}</td>
+          <td><strong>{{ p.Full_Name }}</strong></td>
+          <td>{{ p.Phone_Number }}</td>
+          <td>{{ p.Email }}</td>
+          <td>{{ p.Created_At }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" style="text-align: center; color: #64748b">
+            No passengers registered.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

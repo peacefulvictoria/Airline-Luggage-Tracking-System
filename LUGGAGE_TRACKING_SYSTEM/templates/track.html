@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Track Your Luggage - SkyTrack Air{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Passenger Luggage Tracking Portal</h3>
+    </div>
+
+    <form method="POST" action="{{ url_for('track_luggage') }}" style="display:flex; flex-wrap:wrap; gap:0.75rem;">
+        <input type="text" name="tracking_code" value="{{ searched_code }}" class="form-control"
+               placeholder="Enter Tracking ID (e.g., TRK-2026-10001NG)" required style="flex:1; min-width:250px;">
+        <button type="submit" class="btn btn-primary">Search Luggage</button>
+    </form>
+</div>
+
+{% if luggage %}
+<div class="card">
+    <div class="card-header">
+        <h3>Luggage Summary: {{ luggage.Tracking_Code }}</h3>
+        <span class="badge {% if luggage.Status == 'Delivered' %}badge-delivered{% else %}badge-transit{% endif %}">
+            {{ luggage.Status }}
+        </span>
+    </div>
+
+    <div class="form-grid">
+        <div>
+            <p><strong>Passenger Name:</strong> {{ luggage.Full_Name }}</p>
+            <p><strong>Destination:</strong> {{ luggage.Destination }}</p>
+        </div>
+        <div>
+            <p><strong>Luggage Weight:</strong> {{ luggage.Weight }} kg</p>
+            <p>
+                <strong>Last Recorded Checkpoint:</strong>
+                {% if history %}
+                    {{ history[-1].Location }} ({{ history[-1].Scan_Time }})
+                {% else %}
+                    Awaiting first scan
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Chronological Tracking History</h3>
+    </div>
+
+    {% if history %}
+    <div class="timeline">
+        {% for item in history %}
+        <div class="timeline-item {% if loop.last %}latest{% endif %}">
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+                <strong>{{ item.Status }}</strong>
+                <span style="color:#64748b; font-size:0.85rem;">{{ item.Scan_Time }}</span>
+            </div>
+            <p style="margin-top:0.3rem; color:#334155;">Checkpoint Location: <strong>{{ item.Location }}</strong></p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color:#64748b;">No checkpoint scan records found for this luggage item yet.</p>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

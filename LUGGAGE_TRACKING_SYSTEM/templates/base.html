@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}SkyTrack Airline Luggage System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <div class="app-wrapper">
+      {% if session.get('user_id') %}
+      <!-- Authenticated Sidebar Navigation -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon">QR</div>
+          <div class="brand-text">
+            <h2>SkyTrack Air</h2>
+            <span>Luggage Control</span>
+          </div>
+        </div>
+
+        <ul class="sidebar-nav">
+          {% if session.get('role') == 'Admin' %}
+          <li class="nav-section-title">Administration</li>
+          <li><a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a></li>
+          <li><a href="{{ url_for('manage_users') }}">Manage Users</a></li>
+          <li><a href="{{ url_for('reports') }}">System Reports</a></li>
+          {% endif %}
+
+          <li class="nav-section-title">Baggage Operations</li>
+          <li><a href="{{ url_for('staff_dashboard') }}">Luggage Records</a></li>
+          <li><a href="{{ url_for('register_passenger') }}">Register Passenger</a></li>
+          <li><a href="{{ url_for('register_luggage') }}">Register Luggage</a></li>
+          <li><a href="{{ url_for('scan_qr') }}">Scan QR Checkpoint</a></li>
+
+          <li class="nav-section-title">Public Portal</li>
+          <li><a href="{{ url_for('track_luggage') }}">Passenger Tracking</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+          Signed in as <strong>{{ session.get('username') }}</strong><br />
+          Role: {{ session.get('role') }}
+        </div>
+      </aside>
+      {% endif %}
+
+      <div class="main-content {% if not session.get('user_id') %}no-sidebar{% endif %}">
+        <header class="topbar">
+          <div style="display: flex; align-items: center; gap: 0.75rem">
+            {% if session.get('user_id') %}
+            <button id="sidebarToggle" class="btn btn-outline btn-sm no-print">
+              Menu
+            </button>
+            {% endif %}
+            <span class="topbar-title">QR Code Based Luggage Tracking System</span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem">
+            {% if session.get('user_id') %}
+            <span class="user-badge"
+              >{{ session.get('username') }} ({{ session.get('role') }})</span
+            >
+            <a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm no-print"
+              >Logout</a
+            >
+            {% else %}
+            <a href="{{ url_for('index') }}" class="btn btn-outline btn-sm">Home</a>
+            <a href="{{ url_for('track_luggage') }}" class="btn btn-sky btn-sm"
+              >Track Luggage</a
+            >
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm"
+              >Staff / Admin Login</a
+            >
+            {% endif %}
+          </div>
+        </header>
+
+        <main class="container">
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+          %} {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+        </main>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

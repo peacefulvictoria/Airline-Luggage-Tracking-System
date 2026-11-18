@@ -1,0 +1,85 @@
+{% extends "base.html" %} {% block title %}Scan QR Code &amp; Update Checkpoint - SkyTrack
+Air{% endblock %} {% block content %}
+<div class="form-grid">
+  <!-- Left Card: Live Camera QR Code Scanner -->
+  <div class="card">
+    <div class="card-header">
+      <h3>1. Camera QR Code Scanner</h3>
+    </div>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem">
+      Allow camera access and hold the printed or on-screen luggage QR code in front of
+      your webcam or mobile camera.
+    </p>
+
+    <div id="qr-reader"></div>
+
+    <div id="scan-feedback" style="display: none; margin-top: 1rem"></div>
+    <div
+      id="scanned-luggage-info"
+      style="
+        display: none;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+      "></div>
+  </div>
+
+  <!-- Right Card: Checkpoint Location & Status Update Form -->
+  <div class="card">
+    <div class="card-header">
+      <h3>2. Log Checkpoint &amp; Update Status</h3>
+    </div>
+
+    <form method="POST" action="{{ url_for('scan_qr') }}">
+      <div class="form-group">
+        <label for="tracking_code"
+          >Luggage Tracking ID (Auto-filled on Scan or Manual Entry)</label
+        >
+        <div style="display: flex; gap: 0.5rem">
+          <input
+            type="text"
+            id="tracking_code"
+            name="tracking_code"
+            value="{{ prefill_code }}"
+            class="form-control"
+            placeholder="e.g., TRK-2026-10001NG"
+            required />
+          <button type="button" id="manualLookupBtn" class="btn btn-outline">
+            Verify
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Current Airport Checkpoint / Gate</label>
+        <input
+          type="text"
+          id="location"
+          name="location"
+          class="form-control"
+          placeholder="e.g., Abuja (ABV) - Security Screening Bay 2"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label for="status">Select Updated Luggage Status</label>
+        <select id="status" name="status" class="form-control" required>
+          {% for st in statuses %}
+          <option value="{{ st }}">{{ st }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-success" style="width: 100%">
+        Save Checkpoint Scan &amp; Update Status
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<!-- Browser-Based QR Code Scanning Library (html5-qrcode) -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+{% endblock %}

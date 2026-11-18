@@ -1,0 +1,99 @@
+{% extends "base.html" %} {% block title %}Luggage Details &amp; QR Tag - {{
+luggage.Tracking_Code }}{% endblock %} {% block content %}
+<div class="form-grid">
+  <!-- Left Column: Printable Airline QR Tag -->
+  <div class="card">
+    <div class="card-header no-print">
+      <h3>Printable QR Baggage Tag</h3>
+    </div>
+
+    <div class="luggage-tag-box">
+      <div
+        style="
+          background: #0a2540;
+          color: #fff;
+          padding: 0.45rem;
+          border-radius: 6px;
+          font-weight: 700;
+          letter-spacing: 1px;
+        ">
+        SKYTRACK AIRLINES BAGGAGE TAG
+      </div>
+      <p style="margin-top: 0.65rem; font-size: 0.85rem; color: #64748b">DESTINATION</p>
+      <h4 style="color: #0a2540; font-size: 1.05rem">{{ luggage.Destination }}</h4>
+
+      <img
+        src="{{ url_for('static', filename='qrcodes/' + luggage.QR_Code) }}"
+        alt="Luggage QR Code" />
+
+      <p
+        style="font-size: 1.15rem; font-weight: 800; letter-spacing: 1px; color: #0a2540">
+        {{ luggage.Tracking_Code }}
+      </p>
+      <p style="font-size: 0.82rem; color: #475569; margin-top: 0.35rem">
+        Passenger: {{ luggage.Full_Name }} | Weight: {{ luggage.Weight }} kg
+      </p>
+    </div>
+
+    <div
+      class="no-print"
+      style="
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+        flex-wrap: wrap;
+      ">
+      <a
+        href="{{ url_for('download_qr', filename=luggage.QR_Code) }}"
+        class="btn btn-primary btn-sm"
+        >Download PNG</a
+      >
+      <button onclick="printPageSection()" class="btn btn-sky btn-sm">
+        Print Luggage Tag
+      </button>
+      <a
+        href="{{ url_for('scan_qr', code=luggage.Tracking_Code) }}"
+        class="btn btn-success btn-sm"
+        >Update Checkpoint</a
+      >
+    </div>
+  </div>
+
+  <!-- Right Column: Metadata & Chronological History -->
+  <div class="card no-print">
+    <div class="card-header">
+      <h3>Luggage &amp; Passenger Record</h3>
+      <span
+        class="badge {% if luggage.Status == 'Delivered' %}badge-delivered{% else %}badge-transit{% endif %}">
+        {{ luggage.Status }}
+      </span>
+    </div>
+
+    <p><strong>Tracking Reference:</strong> {{ luggage.Tracking_Code }}</p>
+    <p><strong>Passenger Name:</strong> {{ luggage.Full_Name }}</p>
+    <p><strong>Phone Number:</strong> {{ luggage.Phone_Number }}</p>
+    <p><strong>Email:</strong> {{ luggage.Email }}</p>
+    <p><strong>Destination:</strong> {{ luggage.Destination }}</p>
+    <p><strong>Weight:</strong> {{ luggage.Weight }} kg</p>
+
+    <hr style="margin: 1.25rem 0; border: none; border-top: 1px solid #e2e8f0" />
+    <h4 style="color: #0a2540; margin-bottom: 0.75rem">Chronological Checkpoint Log</h4>
+
+    <div class="timeline">
+      {% for event in history %}
+      <div class="timeline-item {% if loop.last %}latest{% endif %}">
+        <div style="display: flex; justify-content: space-between; gap: 0.5rem">
+          <strong>{{ event.Status }}</strong>
+          <small style="color: #64748b">{{ event.Scan_Time }}</small>
+        </div>
+        <p style="font-size: 0.9rem; margin-top: 0.25rem">
+          Location: <strong>{{ event.Location }}</strong>
+        </p>
+        <small style="color: #64748b">Verified by: {{ event.Updated_By }}</small>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

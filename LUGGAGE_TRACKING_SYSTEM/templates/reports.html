@@ -1,0 +1,95 @@
+{% extends "base.html" %} {% block title %}System Reports - SkyTrack Air{% endblock %} {%
+block content %}
+<div class="card">
+  <div class="card-header">
+    <div>
+      <h3>Airline Luggage Tracking Operational Report</h3>
+      <small style="color: #64748b"
+        >Generated on: {{ generated_at }} | Authorized by: {{ session.get('username')
+        }}</small
+      >
+    </div>
+    <button onclick="printPageSection()" class="btn btn-primary btn-sm no-print">
+      Print / Export PDF Report
+    </button>
+  </div>
+
+  <div class="form-grid">
+    <div>
+      <h4 style="color: #0a2540; margin-bottom: 0.75rem">Summary by Luggage Status</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Total Bags</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in status_breakdown %}
+          <tr>
+            <td><strong>{{ row.Status }}</strong></td>
+            <td>{{ row.Count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h4 style="color: #0a2540; margin-bottom: 0.75rem">Summary by Destination</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Destination</th>
+            <th>Total Bags</th>
+            <th>Delivered</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in destination_breakdown %}
+          <tr>
+            <td>{{ row.Destination }}</td>
+            <td>{{ row.Total_Bags }}</td>
+            <td>{{ row.Delivered_Count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Complete Luggage Audit Register</h3>
+  </div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Tracking ID</th>
+          <th>Passenger</th>
+          <th>Phone</th>
+          <th>Weight</th>
+          <th>Destination</th>
+          <th>Current Status</th>
+          <th>Registered At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in detailed_records %}
+        <tr>
+          <td><strong>{{ r.Tracking_Code }}</strong></td>
+          <td>{{ r.Full_Name }}</td>
+          <td>{{ r.Phone_Number }}</td>
+          <td>{{ r.Weight }} kg</td>
+          <td>{{ r.Destination }}</td>
+          <td>{{ r.Status }}</td>
+          <td>{{ r.Created_At }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

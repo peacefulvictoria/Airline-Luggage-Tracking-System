@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% block title %}Welcome - Airline QR Luggage Tracking System{%
+endblock %} {% block content %}
+<div
+  class="card"
+  style="
+    background: linear-gradient(135deg, #0a2540 0%, #163a5f 100%);
+    color: #ffffff;
+    padding: 2.5rem;
+  ">
+  <h1 style="font-size: 2rem; margin-bottom: 0.75rem">
+    Airline Baggage Tracking &amp; Checkpoint Monitoring
+  </h1>
+  <p style="max-width: 720px; color: #cbd5e1; margin-bottom: 1.75rem">
+    A centralized QR code luggage identification and real-time tracking platform designed
+    to eliminate baggage mishandling, speed up checkpoint verification, and give
+    passengers instant visibility into their luggage location.
+  </p>
+
+  <form
+    action="{{ url_for('track_luggage') }}"
+    method="POST"
+    style="display: flex; flex-wrap: wrap; gap: 0.75rem; max-width: 560px">
+    <input
+      type="text"
+      name="tracking_code"
+      class="form-control"
+      placeholder="Enter Luggage Tracking ID (e.g., TRK-2026-10001NG)"
+      required
+      style="flex: 1; min-width: 240px" />
+    <button type="submit" class="btn btn-sky">Track My Luggage</button>
+  </form>
+</div>
+
+<div class="kpi-grid">
+  <div class="card">
+    <h3 style="color: #0a2540; margin-bottom: 0.5rem">1. Passenger Portal</h3>
+    <p style="color: #64748b; font-size: 0.92rem; margin-bottom: 1rem">
+      Check your luggage status, current airport checkpoint, and complete scan history
+      using your baggage tag ID.
+    </p>
+    <a href="{{ url_for('track_luggage') }}" class="btn btn-outline btn-sm"
+      >Open Passenger Tracker</a
+    >
+  </div>
+
+  <div class="card">
+    <h3 style="color: #0a2540; margin-bottom: 0.5rem">2. Airline Staff Operations</h3>
+    <p style="color: #64748b; font-size: 0.92rem; margin-bottom: 1rem">
+      Register passengers, generate unique QR baggage labels, and scan luggage via webcam
+      at security and loading gates.
+    </p>
+    <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm"
+      >Airline Staff Login</a
+    >
+  </div>
+
+  <div class="card">
+    <h3 style="color: #0a2540; margin-bottom: 0.5rem">3. System Administration</h3>
+    <p style="color: #64748b; font-size: 0.92rem; margin-bottom: 1rem">
+      Monitor airport-wide baggage KPIs, audit tracking logs, manage staff credentials,
+      and generate operational reports.
+    </p>
+    <a href="{{ url_for('login') }}" class="btn btn-sky btn-sm">Administrator Login</a>
+  </div>
+</div>
+{% endblock %}
